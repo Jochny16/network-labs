@@ -1,0 +1,9 @@
+table inet fw {
+	chain forward {
+		type filter hook forward priority filter; policy drop;
+		ct state established,related accept
+		iifname "eth0.10" oifname "eth0.20" accept
+		iifname "eth0.20" oifname "eth0.10" ip daddr 192.168.10.1 tcp dport 8080 accept
+		counter comment "dropped by policy"
+	}
+}
