@@ -7,6 +7,7 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 |---|---|---|---|
 | 01 | [VLAN + router-on-a-stick](01-vlan-lab/) | VLANs, access/trunk ports, 802.1Q, inter-VLAN routing, ARP, TTL | Linux bridge, network namespaces, tcpdump |
 | 02 | [Stateful firewall between VLANs](02-vlan-firewall/) | Default deny, stateful inspection, least privilege, nftables | nftables, conntrack, curl |
+| 03 | [Spanning Tree (STP)](03-stp/) | Root bridge election, port roles, blocking, failover, convergence | Linux bridge STP |
 
 ## Planned
 
