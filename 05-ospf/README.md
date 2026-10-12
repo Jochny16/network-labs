@@ -70,6 +70,29 @@ Three Linux routers (network namespaces) in a triangle, each running FRRouting (
 8. **Cost decides the path.** The direct r1–r3 link has a lower total cost than the path through r2. The backup path is not blocked (unlike STP) – it is in the LSDB, just not the best, so it is not installed in the routing table until it becomes the best.
 9. **TTL shows the path length.** 62 = 2 routers (direct), 61 = 3 routers (via r2).
 
+## Extension: OSPF cost and ECMP
+
+All interfaces start with cost 10. OSPF path cost = sum of the **outgoing** interface costs along the path.
+
+| Change | Direct r1 → r3 → LAN | Via r2 | Result on r1 |
+|---|---|---|---|
+| Default (all 10) | 10 + 10 = 20 | 10 + 10 + 10 = 30 | via 10.0.13.2 (direct) |
+| r1 to-r3 cost 100 (r1 only) | 100 + 10 = 110 | 30 | via 10.0.12.2 – but r3 still returns directly: **asymmetric routing** (ping showed ttl 62 = return path) |
+| cost 30 on both ends | 30 + 10 = 40 | 30 | via 10.0.12.2 |
+| cost 20 on both ends | 20 + 10 = 30 | 30 | **ECMP** – two next hops |
+
+ECMP in the Linux routing table:
+
+    10.0.3.0/24 proto ospf metric 20
+            nexthop via 10.0.12.2 dev to-r2 weight 1
+            nexthop via 10.0.13.2 dev to-r3 weight 1
+
+Lessons:
+
+1. **Interface cost ≠ path cost.** To make two paths equal, compute the whole sum, then set the single interface so the totals match.
+2. **Cost is one-directional.** It affects only traffic leaving that interface. Changing it on one router only creates asymmetric routing, which breaks stateful firewalls (they see only half of the connection). Change both ends of the link.
+3. **OSPF does not pick one path on a tie** (unlike STP, which blocks). It installs all equal-cost paths and load-balances. Linux hashes per flow, so one ping stream stays on one path; different flows spread across both.
+
 ## Cisco equivalents
 
 | This lab (FRR) | Cisco IOS |
@@ -80,11 +103,11 @@ Three Linux routers (network namespaces) in a triangle, each running FRRouting (
 | `passive-interface lan` | `passive-interface g0/0` |
 | `show ip ospf neighbor` | `show ip ospf neighbor` |
 | `show ip route ospf` | `show ip route ospf` (O = OSPF) |
+| `ip ospf cost 20` (interface) | `ip ospf cost 20` (interface) |
+| `maximum-paths` (ECMP) | `maximum-paths 4` (default 4 on IOS) |
 | `ip route` with `proto ospf` | `show ip route` |
 
 ## Next steps
 
-- Change the OSPF cost on r1's to-r3 interface (`ip ospf cost 100`) and predict the new path.
-- Make both paths equal cost and observe ECMP (two next hops for one network).
 - Multi-area OSPF: put pc3's LAN into area 1 with r3 as the ABR.
 - Rebuild the same topology on Cisco IOS in EVE-NG / Packet Tracer.
