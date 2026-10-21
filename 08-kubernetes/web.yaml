@@ -1,0 +1,46 @@
+# web.yaml - desired state: 3 nginx pods + one stable Service in front of them
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27
+          ports:
+            - containerPort: 80
+          readinessProbe:      # send traffic only when nginx answers GET /
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 2
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  type: NodePort
+  selector:
+    app: web          # every pod with this label gets traffic
+  ports:
+    - port: 80        # Service port (ClusterIP 10.43.x.x)
+      targetPort: 80  # container port in the pod
+      nodePort: 30080 # port on the laptop: curl localhost:30080

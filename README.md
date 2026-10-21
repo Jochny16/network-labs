@@ -12,6 +12,7 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 | 05 | [OSPF with FRRouting](05-ospf/) | OSPF area 0, neighbours, LSA/SPF, passive interface, cost, failover | FRRouting, network namespaces |
 | 06 | [DHCP + rogue server](06-dhcp/) | DORA, leases, pool exhaustion, rogue DHCP (MITM), DHCP snooping | dnsmasq, dhclient, tcpdump |
 | 07 | [Ansible: one playbook, three servers](07-ansible/) | Inventory, playbooks, idempotency, configuration drift, templates, handlers | Ansible, Docker |
+| 08 | [Kubernetes basics](08-kubernetes/) | Pods, Deployment, Service, self-healing, load balancing, readinessProbe, rolling update | k3s, kubectl |
 
 ## Planned
 
