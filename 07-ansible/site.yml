@@ -1,0 +1,55 @@
+# site.yml - baseline for every server + a web server role for the web group
+- name: Baseline for all servers
+  hosts: all
+  tasks:
+    - name: Admin tools are installed
+      ansible.builtin.apt:
+        name: [curl, less, iproute2]
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: User "ops" exists
+      ansible.builtin.user:
+        name: ops
+        shell: /bin/bash
+
+    - name: Login banner (motd) is set
+      ansible.builtin.template:
+        src: templates/motd.j2
+        dest: /etc/motd
+        mode: "0644"
+
+- name: Web servers
+  hosts: web
+  tasks:
+    - name: nginx is installed
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+
+    - name: nginx site config is deployed
+      ansible.builtin.template:
+        src: templates/site.conf.j2
+        dest: /etc/nginx/sites-enabled/default
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Start page is deployed
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: /var/www/html/index.html
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: nginx is running
+      # containers have no systemd - on a real server: ansible.builtin.service
+      ansible.builtin.command: nginx
+      args:
+        creates: /run/nginx.pid
+
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.command: nginx -s reload
+      # do not fail if nginx is not running (e.g. container just restarted)
+      failed_when: false

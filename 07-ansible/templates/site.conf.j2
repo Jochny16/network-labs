@@ -1,0 +1,7 @@
+# Managed by Ansible - IPv4 only, so it also works in containers without IPv6
+server {
+    listen 80 default_server;
+    server_name {{ inventory_hostname }};
+    root /var/www/html;
+    index index.html;
+}

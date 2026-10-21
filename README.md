@@ -11,11 +11,11 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 | 04 | [Static routing](04-static-routing/) | Connected vs static routes, next hop, return path, timeout vs unreachable, TTL | Linux namespaces, iproute2 |
 | 05 | [OSPF with FRRouting](05-ospf/) | OSPF area 0, neighbours, LSA/SPF, passive interface, cost, failover | FRRouting, network namespaces |
 | 06 | [DHCP + rogue server](06-dhcp/) | DORA, leases, pool exhaustion, rogue DHCP (MITM), DHCP snooping | dnsmasq, dhclient, tcpdump |
+| 07 | [Ansible: one playbook, three servers](07-ansible/) | Inventory, playbooks, idempotency, configuration drift, templates, handlers | Ansible, Docker |
 
 ## Planned
 
 - 04: NAT
-- Network automation with Ansible
 
 ## Environment
 
