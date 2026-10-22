@@ -13,10 +13,11 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 | 06 | [DHCP + rogue server](06-dhcp/) | DORA, leases, pool exhaustion, rogue DHCP (MITM), DHCP snooping | dnsmasq, dhclient, tcpdump |
 | 07 | [Ansible: one playbook, three servers](07-ansible/) | Inventory, playbooks, idempotency, configuration drift, templates, handlers | Ansible, Docker |
 | 08 | [Kubernetes basics](08-kubernetes/) | Pods, Deployment, Service, self-healing, load balancing, readinessProbe, rolling update | k3s, kubectl |
+| 09 | [NAT, PAT, port forwarding](09-nat/) | Source NAT/masquerade, PAT ports, NAT table, DNAT, RFC 1918 | nftables, conntrack, tcpdump |
 
 ## Planned
 
-- 04: NAT
+- 10: ACLs (standard vs extended, placement)
 
 ## Environment
 
