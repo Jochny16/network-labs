@@ -14,10 +14,11 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 | 07 | [Ansible: one playbook, three servers](07-ansible/) | Inventory, playbooks, idempotency, configuration drift, templates, handlers | Ansible, Docker |
 | 08 | [Kubernetes basics](08-kubernetes/) | Pods, Deployment, Service, self-healing, load balancing, readinessProbe, rolling update | k3s, kubectl |
 | 09 | [NAT, PAT, port forwarding](09-nat/) | Source NAT/masquerade, PAT ports, NAT table, DNAT, RFC 1918 | nftables, conntrack, tcpdump |
+| 10 | [ACLs: standard vs extended](10-acl/) | First match, implicit deny, ACL placement, stateless ACLs, hit counters | nftables |
 
 ## Planned
 
-- 10: ACLs (standard vs extended, placement)
+- 11: Windows Server, Active Directory and GPO (Proxmox)
 
 ## Environment
 
