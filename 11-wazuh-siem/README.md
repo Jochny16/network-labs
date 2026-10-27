@@ -77,8 +77,103 @@ same burst. 12 failures produced 23 auth-failure events and 0 successes.
 | Attack source | from the manager | real traffic from the internet |
 | Deployment | all-in-one, 1 node | distributed (indexer cluster) |
 
+## Part 2: File Integrity Monitoring and alert triage
+
+Same two containers. Lab 11 detected behaviour (logins); FIM detects a change
+of state - a file that should not change, did.
+
+### Topology
+
+    CT 121 victim                            CT 112 wazuh
+    wazuh-agent / syscheck                   manager
+      - hashes files, keeps a baseline  -->  rules 550 / 553 / 554  --> alert
+      - realtime = inotify               1514
+
+### Run
+
+Watch one directory in realtime, with diffs (inside CT 121, via the host):
+
+    pct exec 121 -- mkdir -p /root/fim-test
+    pct exec 121 -- sed -i '0,/<syscheck>/s|<syscheck>|<syscheck>\n    <directories realtime="yes" check_all="yes" report_changes="yes">/root/fim-test</directories>|' /var/ossec/etc/ossec.conf
+    pct exec 121 -- grep -n -A2 "<syscheck>" /var/ossec/etc/ossec.conf
+    pct exec 121 -- systemctl restart wazuh-agent
+
+Wait for "File integrity monitoring scan ended" in /var/ossec/logs/ossec.log,
+then create, modify and delete a file:
+
+    pct exec 121 -- bash -c 'echo "haslo=tajne123" > /root/fim-test/secret.txt'
+    pct exec 121 -- bash -c 'echo "haslo=zmienione_przez_atakujacego" > /root/fim-test/secret.txt'
+    pct exec 121 -- rm /root/fim-test/secret.txt
+
+Dashboard: Threat Hunting -> Events, rule.id:554 or rule.id:550 or rule.id:553.
+
+### Results: FIM
+
+| Time | Rule | Level | Event | Detail |
+|---|---|---|---|---|
+| 19:57:23 | 554 | 5 | File added to the system | secret.txt, 15 bytes |
+| 19:58:44 | 550 | 7 | Integrity checksum changed | MD5 changed, 15 -> 34 bytes, diff shown |
+| 20:03:23 | 553 | 7 | File deleted | alert kept on the manager |
+
+The diff field (report_changes) showed the exact change:
+
+    1c1
+    < haslo=tajne123
+    ---
+    > haslo=zmienione_przez_atakujacego
+
+### Results: triaging the rootcheck noise
+
+The agent restart also produced ~99 alerts of rule 510 (level 7) within
+a few milliseconds:
+
+    File '/dev/.lxc/proc/schedstat' present on /dev. Possible hidden file.
+
+| Step | Finding |
+|---|---|
+| Evidence | data.file under /dev/.lxc/, fired only at agent start, firedtimes 85+ |
+| Context | victim is an LXC container; LXC puts virtual /proc files in /dev/.lxc |
+| Verdict | false positive - container infrastructure, not a hidden attacker file |
+| Tuning | rootcheck ignore for /dev/.lxc, agent restarted |
+| Retest | 1 alert left: /dev/.lxc-boot-id (separate file, also LXC) |
+| Tuning 2 | second ignore for /dev/.lxc-boot-id |
+| Retest 2 | 0 new rule 510 alerts after restart |
+
+Final agent config:
+
+    <rootcheck>
+      <ignore>/dev/.lxc</ignore>
+      <ignore>/dev/.lxc-boot-id</ignore>
+      <disabled>no</disabled>
+
+Ticket note:
+
+    FP. Rule 510 on agent victim (LXC container): files in /dev/.lxc/proc/ are
+    virtual /proc files created by LXC, not hidden attacker files. Fires only
+    at agent start, same pattern every time. Fix: rootcheck ignore /dev/.lxc
+    and /dev/.lxc-boot-id. Retested: 0 new alerts.
+
+### What I learned (part 2)
+
+1. **FIM reports change, not badness.** The first scan builds a silent
+   baseline. A file added after it is rule 554; a file planted before the
+   agent was installed becomes part of "normal".
+2. **Levels follow risk.** New file = 5, changed or deleted file = 7.
+   Where the file is matters more than the rule: /tmp vs ~/.ssh/authorized_keys.
+3. **Deleting evidence locally does not help the attacker.** The 553 alert
+   and the diff live on the manager, not on the victim.
+4. **The security tool can leak data.** report_changes keeps a copy of the
+   file and puts the diff in the index - here a password in clear text.
+   Use nodiff for files with secrets.
+5. **No verdict without evidence.** My first guess was "true positive" from
+   the rule name alone. full_log and data.file turned it into a clear FP.
+6. **Exceptions must be narrow.** /dev/.lxc did not cover /dev/.lxc-boot-id.
+   That is correct: a prefix match would also hide /dev/.lxc-backdoor.
+7. **Check the time zone.** Agent log is UTC, dashboard is local time (+1 h).
+
 ## Next steps
 
-- File Integrity Monitoring: edit a file on victim, watch the FIM alert.
-- Active response: auto-block the source IP after the brute-force alert.
+- Active response: auto-block the source IP after the SSH brute-force alert.
+- FIM with whodata (auditd): who changed the file and with which process.
+- Watch ~/.ssh/authorized_keys and /etc/passwd - realistic persistence targets.
 - Add a Windows agent (ties into the planned AD lab) and watch event 4625.
