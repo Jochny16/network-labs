@@ -16,6 +16,7 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 | 09 | [NAT, PAT, port forwarding](09-nat/) | Source NAT/masquerade, PAT ports, NAT table, DNAT, RFC 1918 | nftables, conntrack, tcpdump |
 | 10 | [ACLs: standard vs extended](10-acl/) | First match, implicit deny, ACL placement, stateless ACLs, hit counters | nftables |
 | 11 | [Wazuh SIEM: SSH brute-force, FIM, alert triage](11-wazuh-siem/) | SIEM, log correlation, agent enrollment, rule levels, FIM, rootcheck tuning, false positives | Wazuh 4.14, Proxmox LXC |
+| 11b | [Wazuh FIM](11b-wazuh-fim/) | File integrity monitoring, realtime vs scheduled, baseline gap, rules 550/553/554 | Wazuh, Proxmox |
 
 ## Planned
 
