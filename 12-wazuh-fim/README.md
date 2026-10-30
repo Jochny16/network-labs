@@ -95,4 +95,4 @@ Cleanup:
 
 - Active response on rule 100100 (for example remove the added key or block the source).
 - whodata mode with auditd.
-- Lab 13: Windows Server + Active Directory + GPO, Windows agent in Wazuh (event 4625).
+- Lab 14: Windows Server + Active Directory + GPO, Windows agent in Wazuh (event 4625).
