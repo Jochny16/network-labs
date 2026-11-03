@@ -18,11 +18,12 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 | 11 | [Wazuh SIEM: SSH brute-force, FIM, alert triage](11-wazuh-siem/) | SIEM, log correlation, agent enrollment, rule levels, FIM, rootcheck tuning, false positives | Wazuh 4.14, Proxmox LXC |
 | 12 | [Wazuh FIM](12-wazuh-fim/) | File integrity monitoring, realtime, report_changes diff, rules 550/553/554, custom rule, SSH key persistence | Wazuh, Proxmox |
 | 13 | [Wazuh Active Response](13-wazuh-active-response/) | Active response, firewall-drop, automatic IP block, timeout, whitelist, rule frequency | Wazuh 4.14, iptables-nft, Proxmox LXC |
+| 14 | [DHCP relay](14-dhcp-relay/) | DHCP relay, giaddr, limited broadcast, return route, ARP | network namespaces, dnsmasq, tcpdump |
 | 11b | [Wazuh FIM](11b-wazuh-fim/) | File integrity monitoring, realtime vs scheduled, baseline gap, rules 550/553/554 | Wazuh, Proxmox |
 
 ## Planned
 
-- 14: Windows Server, Active Directory and GPO (Proxmox)
+- 15: Windows Server, Active Directory and GPO (Proxmox)
 
 ## Environment
 
