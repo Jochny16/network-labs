@@ -21,11 +21,12 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 | 14 | [DHCP relay](14-dhcp-relay/) | DHCP relay, giaddr, limited broadcast, return route, ARP | network namespaces, dnsmasq, tcpdump |
 | 15 | [DROP vs REJECT](15-drop-vs-reject/) | nftables drop, reject tcp reset, reject icmp, closed port, SYN retransmission | nftables, tcpdump, Python sockets |
 | 16 | [Port security](16-port-security/) | sticky MAC, violation shutdown/restrict/protect, err-disabled, DTP, ARP as first frame | Cisco Packet Tracer, IOS 2960 |
+| 17 | [DHCP relay in Packet Tracer](17-dhcp-relay-pt/) | ip helper-address, Discover broadcast, giaddr, Simulation mode | Packet Tracer, Cisco IOS |
 | 11b | [Wazuh FIM](11b-wazuh-fim/) | File integrity monitoring, realtime vs scheduled, baseline gap, rules 550/553/554 | Wazuh, Proxmox |
 
 ## Planned
 
-- 17: Windows Server, Active Directory and GPO (Proxmox)
+- 18: Windows Server, Active Directory and GPO (Proxmox)
 
 ## Environment
 
