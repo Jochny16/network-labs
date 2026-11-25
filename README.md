@@ -26,6 +26,7 @@ Each lab is reproducible on a plain Linux machine or in my Proxmox homelab, with
 | 19 | [Active Directory + Wazuh](19-active-directory/) | Windows Server 2022 DC, DNS, OU/users, account lockout, events 4625/4740/4767, Wazuh agent | Proxmox, PowerShell, smbclient, Wazuh |
 | 20 | [Password spraying detection](20-password-spraying/) | AD lockout vs spraying, Wazuh correlation rule (frequency, same_field, not_same_field), MITRE T1110.003 | Windows Server 2022, Wazuh, smbclient |
 | 21 | [MikroTik CHR](21-mikrotik-chr/) | RouterOS basics, DHCP server, masquerade, stateful firewall, port forward (dstnat), VLAN, interface lists, export vs backup/restore | MikroTik CHR 7.25, Proxmox, nginx |
+| 22 | [AD file share permissions](22-ad-file-share/) | Share vs NTFS permissions, group-based access, onboarding/offboarding, logon token | Windows Server 2022, PowerShell, icacls, smbclient |
 | 11b | [Wazuh FIM](11b-wazuh-fim/) | File integrity monitoring, realtime vs scheduled, baseline gap, rules 550/553/554 | Wazuh, Proxmox |
 
 ## Planned
