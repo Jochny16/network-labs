@@ -1,4 +1,4 @@
-# Lab 12: Wazuh File Integrity Monitoring (FIM)
+# Lab 12: Wazuh FIM: report_changes + SSH key persistence
 
 File Integrity Monitoring with the Wazuh agent (syscheck) on the lab 11 setup.
 The agent watches selected directories in realtime, the manager raises alerts
